@@ -36,6 +36,11 @@ angular
         controller: 'AboutCtrl',
         controllerAs: 'about'
       })
+	  .when('/howto', {
+		  templateUrl:'views/howto.html',
+		  controller: 'howtoCtrl',
+		  controllerAs: 'howto'
+	  })
       .otherwise({
         redirectTo: '/'
       });
