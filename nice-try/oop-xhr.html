@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+	<head></head>
+	<body>
+	<p>
+	
+	</p>
+	<script type="text/javascript">
+		// 利用单体的分支技术来定义XHR（XMLHttpRequest）对象,必须要用闭包才可以实现 
+		var XHR = (function(){ 
+			//The three branches 
+			var standard = { 
+				cXHR:function(){ 
+					return new XMLHttpRequest(); 
+				} 
+			}; 
+			var activeXNew = { 
+				cXHR:function(){ 
+					return new ActiveXObject('Msxml2.XMLHttp'); 
+				} 
+			}; 
+			var activeXOld = { 
+				cXHR:function(){ 
+					return new ActiveXObject('Microsoft.XMLHttp'); 
+				} 
+			}; 
+			//To assign(分配) the branch, try each method;return whatever doesn't fail 
+			var testObject; 
+			try{ 
+				testObject = standard.cXHR(); 
+				return standard;// return this branch if no error was thrown 
+			}catch(e){ 
+				try{ 
+					testObject = activeXNew.cXHR(); 
+					return activeXNew; 
+				}catch(e){ 
+					try{ 
+						testObject = activeXOld.cXHR(); 
+						return activeXOld; 
+					}catch(e){ 
+						throw new Error('Create the XMLHttpRequestObject failed!'); 
+					} 
+				} 
+			} 
+		})(); 
+		window.onload = function(){ 
+			alert(XHR.cXHR()); 
+		} 
+	
+	</script>
+	
+	</body>
+</html>

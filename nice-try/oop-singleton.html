@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+	<head></head>
+	<body>
+		<script type="text/javascript">
+			var Sky = { 
+				nickName: "sky", 
+				age: "26", 
+				timeInfo: function() 
+				{ 
+					var _year = new Date().getFullYear(); 
+					return _year; 
+				}(), 
+				sayHello: function() 
+				{ 
+					alert("hello,world!"); 
+				} 
+			} 
+			//所有内部信息通过Sky这个变量进行访问； 
+			alert(Sky.timeInfo);
+		</script>
+	</body>
+</html>

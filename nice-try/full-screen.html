@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	<script type="text/javascript" src="http://libs.baidu.com/jquery/1.9.0/jquery.js"></script>
+</head>
+<body id="welcome">
+<h1>http://pingmu.zh-ang.com/#welcome</h1>
+<div id="resolution"></div>
+<div id="bodysize"></div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+
+		$("#resolution").html(screen.width+"x"+screen.height+"x"+screen.colorDepth);
+		$("#bodysize").html($("#welcome").width()+"x"+$("#welcome").height());
+
+		var slide = new Array();
+		var current_slide = 0;
+		var lock = 1;
+	
+		$(document).keyup(function(e) {
+
+			if (lock) return;
+
+			switch (e.keyCode) {
+				case 37: // arrow left
+					go(current_slide-1); break;
+				case 39: // arror right
+				case 13: // enter
+				case 32: // space
+					go(current_slide+1); break;
+				case 27: // esc
+					$(document).fullScreen(false);
+					go(0);
+			}
+		});
+
+		
+
+	});
+
+</script>
+</div>
+</body>
+</html>

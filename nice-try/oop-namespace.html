@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+	<head></head>
+	<body>
+	<script type="text/javascript">
+		var box = { 
+			width:0, 
+			height:0, 
+			getArea:function(){ 
+				return this.width*this.height;//js中对象成的访问必须是显示的，即this是不能省略的 
+			}, 
+			init:function(w,h){ 
+				// width = w; 
+				// height = h;这种方式相当于定义了两个全局变量，（没加var声明的变量为全局变量） 
+				// 并不是对对象width和height的赋值 
+				//下面是正确的 
+				this.width = w; 
+				this.height = h; 
+			} 
+		}//box划分了一个命名空间，命名空间里的变量只在空间里有效
+	</script>
+	
+	
+	</body>
+</html>

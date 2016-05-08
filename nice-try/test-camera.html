@@ -1,0 +1,175 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<script src="http://code.jquery.com/jquery-1.12.0.min.js"></script>
+		<script type="text/javascript">
+			//下面用于图片上传预览功能
+			function setImagePreview(avalue) {
+				var docObj=document.getElementById("fileup");
+				 
+				var imgObjPreview=document.getElementById("preview");
+				if(docObj.files &&docObj.files[0])
+				{
+					//火狐下，直接设img属性
+					imgObjPreview.style.display = 'block';
+					imgObjPreview.style.width = '150px';
+					imgObjPreview.style.height = '180px'; 
+					//imgObjPreview.src = docObj.files[0].getAsDataURL();
+					 
+					//火狐7以上版本不能用上面的getAsDataURL()方式获取，需要一下方式
+					imgObjPreview.src = window.URL.createObjectURL(docObj.files[0]);
+				}else{
+					//IE下，使用滤镜
+					docObj.select();
+					var imgSrc = document.selection.createRange().text;
+					var localImagId = document.getElementById("localImag");
+					//必须设置初始大小
+					localImagId.style.width = "150px";
+					localImagId.style.height = "180px";
+					//图片异常的捕捉，防止用户修改后缀来伪造图片
+					try{
+					localImagId.style.filter="progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod=scale)";
+					localImagId.filters.item("DXImageTransform.Microsoft.AlphaImageLoader").src = imgSrc;
+					}
+					catch(e)
+					{
+					alert("您上传的图片格式不正确，请重新选择!");
+					return false;
+					}
+					imgObjPreview.style.display = 'none';
+					document.selection.empty();
+				}
+				return true;
+			}
+		</script>
+	</head>
+	<body>
+		<p>文件预览</p>
+		<input id="fileup" type="file" onchange="javascript:setImagePreview();" /><div id="localImag"></div>
+		<img src="" alt="" id="preview" />
+		<hr />
+		<p>html5预览</p>
+		<p id="support"></p>
+		<div id="contentHolder">       
+			 <video id="video" width="320" height="320" autoplay>
+			</video>       
+			 <button id="snap" style="display:none"> 拍照</button>        
+			<canvas style="display:none" id="canvas" width="320" height="320">
+			</canvas> 
+		</div>
+		<hr />
+		<p>地理位置查询</p>
+		<p id="ipaddress"></p>
+		<hr />
+		<p>html5地理位置</p>
+		<button onclick="getLocation()">查询位置</button>
+		<p id="locationinfo"></p>
+		<div style="height:20px;"></div>
+<script>     
+  //判断浏览器是否支持HTML5 Canvas           
+window.onload = function () {          
+     try {                   
+//动态创建一个canvas元 ，并获取他2Dcontext。如果出现异常则表示不支持                   document.createElement("canvas").getContext("2d");        
+           document.getElementById("support").innerHTML = "浏览器支持HTML5 CANVAS";         
+      }          
+     catch (e) {           
+        document.getElementById("support").innerHTML = "浏览器不支持HTML5 CANVAS";       
+        }                
+};                
+     //这段代 主要是获取摄像头的视频流并显示在Video 签中           
+window.addEventListener("DOMContentLoaded", function () {            
+   var canvas = document.getElementById("canvas"),              
+     context = canvas.getContext("2d"),                
+   video = document.getElementById("video"),          
+         videoObj = { "video": true },             
+      errBack = function (error) {           
+            console.log("Video capture error: ", error.code);    
+               };               
+    //navigator.getUserMedia这个写法在Opera中好像是navigator.getUserMedianow       
+        if (navigator.getUserMedia) {     
+              navigator.getUserMedia(videoObj, function (stream) {
+                       video.src = stream;                
+       video.play();      
+             }, errBack);           
+    } else if (navigator.webkitGetUserMedia) {        
+           navigator.webkitGetUserMedia(videoObj, function (stream) {          
+             video.src = window.webkitURL.createObjectURL(stream);           
+            video.play();           
+        }, errBack);           
+    }         
+      //这个是拍照按钮的事件，          
+     $("#snap").click(function () {          
+         context.drawImage(video, 0, 0, 320, 320);     
+              //CatchCode();           
+    });           
+}, false);           
+
+                         //这个是 刷新上 图像的        
+   function CatchCode() {        
+       $("#snap").click();
+	//实际运用可不写，测试代 ， 为单击拍照按钮就获取了当前图像，有其他用途    
+        var canvans = document.getElementById("canvas"); 
+	//获取浏览器页面的画布对象                       
+   //以下开始编 数据   
+        var imgData = canvans.toDataURL(); 
+	//将图像转换为base64数据
+         var base64Data = imgData.substr(22); 
+	//在前端截取22位之后的字符串作为图像数据       
+         //开始异步上             
+          
+    }      
+ </script> 
+ <script>
+var x=document.getElementById("locationinfo");
+var options = {
+        // 指示浏览器获取高精度的位置，默认为false
+        enableHighAccuracy: true,
+        // 指定获取地理位置的超时时间，默认不限时，单位为毫秒
+        timeout: 5000,
+        // 最长有效期，在重复获取地理位置时，此参数指定多久再次获取位置。
+        maximumAge: 3000
+    };
+function getLocation()
+  {
+  if (navigator.geolocation)
+    {
+    navigator.geolocation.getCurrentPosition(showPosition,showError);
+    }
+  else{x.innerHTML="Geolocation is not supported by this browser.";}
+  }
+function showPosition(position)
+  {
+  x.innerHTML="纬度: " + position.coords.latitude + 
+  "<br>经度: " + position.coords.longitude;	
+  }
+function showError(error)
+  {
+  switch(error.code) 
+    {
+    case error.PERMISSION_DENIED:
+      x.innerHTML="用户拒绝对获取地理位置的请求。"
+      break;
+    case error.POSITION_UNAVAILABLE:
+      x.innerHTML="位置信息是不可用的。"
+      break;
+    case error.TIMEOUT:
+      x.innerHTML="请求用户地理位置超时。"
+      break;
+    case error.UNKNOWN_ERROR:
+      x.innerHTML="未知错误。"
+      break;
+    }
+  }
+</script>
+<script type="text/javascript">
+        $.getScript('http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js', function(_result) {
+            if (remote_ip_info.ret == '1') {
+				var y = document.getElementById('ipaddress');
+                y.innerHTML = '国家：' + remote_ip_info.country + '<br>省：' + remote_ip_info.province + '<br>市：' + remote_ip_info.city + '<br>区：' + remote_ip_info.district + '<br>ISP：' + remote_ip_info.isp + '<br>类型：' + remote_ip_info.type + '<br>其他：' + remote_ip_info.desc;
+            } else {
+                alert('没有找到匹配的IP地址信息！');
+            }
+        });
+</script>
+	</body>
+</html>
